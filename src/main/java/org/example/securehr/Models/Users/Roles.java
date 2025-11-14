@@ -1,4 +1,4 @@
-package org.example.securehr.Models;
+package org.example.securehr.Models.Users;
 
 public enum Roles {
     USER,

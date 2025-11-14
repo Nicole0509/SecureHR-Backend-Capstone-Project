@@ -17,4 +17,9 @@ public class UserController {
     public String login(){
         return "you can now login";
     }
+
+    @GetMapping("/hey")
+    public String somethingprivate(){
+        return "you are bow authenticated";
+    }
 }
