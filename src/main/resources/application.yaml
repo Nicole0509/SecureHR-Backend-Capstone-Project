@@ -1,0 +1,25 @@
+spring:
+  application:
+    name: SecureHR
+
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    password: ${DB_PASSWORD}
+    username: ${DB_USERNAME}
+    url: ${DB_URL}
+
+    jpa:
+      properties:
+        hibernate:
+          format_sql: true
+          show-sql: true
+      hibernate:
+        ddl-auto: create
+
+server:
+  port: 8081
+
+app:
+  jwt:
+    key: ${JWT_SECRET}  #secret key
+    expiration: ${JWT_EXPIRATION} #72 hours worth of token activation
