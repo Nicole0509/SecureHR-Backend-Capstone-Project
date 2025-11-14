@@ -18,7 +18,7 @@ create table employees
     names      varchar(255) not null,
     position   varchar(255),
     department varchar(255),
-    hireDate   date,
+    hire_date   date,
     user_id    integer,
     foreign key (user_id) references users(id)
 );

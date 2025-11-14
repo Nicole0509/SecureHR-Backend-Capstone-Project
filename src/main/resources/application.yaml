@@ -4,9 +4,9 @@ spring:
 
   datasource:
     driver-class-name: org.postgresql.Driver
-    password: Nicole0509
-    username: postgres
-    url: jdbc:postgresql://localhost:5432/securehr
+    password: ${DB_PASSWORD}
+    username: ${DB_USERNAME}
+    url: ${DB_URL}
 
     jpa:
       properties:
@@ -14,12 +14,12 @@ spring:
           format_sql: true
           show-sql: true
       hibernate:
-        ddl-auto: update
+        ddl-auto: create
 
 server:
   port: 8081
 
 app:
   jwt:
-    key: Z2CUX889AL8BeQGjd08rej+H2qfEuLTJg4VvBfRogN8=Y/zX3ZRVCdoSsnmLgSte8t0hUs9ikuBE3+ZKWkuKopY=  #secret key
-    expiration: 259200000ms #72 hours worth of token activation
+    key: ${JWT_SECRET}  #secret key
+    expiration: ${JWT_EXPIRATION} #72 hours worth of token activation
