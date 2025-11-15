@@ -1,5 +1,6 @@
 package org.example.securehr.Controllers;
 
+import jakarta.validation.Valid;
 import org.example.securehr.DTOs.Aunthentication.RegistrationDTO;
 import org.example.securehr.Services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,7 +14,7 @@ public class UserController {
     private UserService userService;
 
     @PostMapping("/auth/register")
-    public String register(@RequestBody RegistrationDTO registrationDTO){
+    public String register(@Valid @RequestBody RegistrationDTO registrationDTO){
         return userService.register(registrationDTO);
     }
 
