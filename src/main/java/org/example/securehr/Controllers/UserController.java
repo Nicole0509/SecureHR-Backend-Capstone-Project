@@ -5,6 +5,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import jakarta.validation.Valid;
 import org.example.securehr.DTOs.Aunthentication.LoginDTO;
 import org.example.securehr.DTOs.Aunthentication.RegistrationDTO;
+import org.example.securehr.DTOs.User.UserResponseDTO;
 import org.example.securehr.Services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -62,9 +63,32 @@ public class UserController {
         return userService.verify(loginDTO);
     }
 
-    @GetMapping("/user")
-    public String view(){
-        return "A list of all users :)";
+    @Operation(
+            description = "This endpoint shows a single user, the corresponding email and the role." +
+                    "P.S.: An ADMIN can access all kinds of ids but a USER can only access their own id alone.",
+            summary = "Get A User By Id",
+            responses = {
+                    @ApiResponse(
+                            description = "Success",
+                            responseCode = "200"
+                    ),
+                    @ApiResponse(
+                            description = "Not Found",
+                            responseCode = "404"
+                    ),
+                    @ApiResponse(
+                            description = "Bad Request",
+                            responseCode = "400"
+                    ),
+                    @ApiResponse(
+                            description = "Conflict",
+                            responseCode = "409"
+                    ),
+            }
+    )
+    @GetMapping("/user/{id}")
+    public UserResponseDTO getUserById(@PathVariable Long id){
+        return userService.getUserById(id);
     }
 
     @PatchMapping("/user")

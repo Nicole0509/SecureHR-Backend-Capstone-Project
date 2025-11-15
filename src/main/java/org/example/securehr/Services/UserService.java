@@ -2,7 +2,9 @@ package org.example.securehr.Services;
 
 import org.example.securehr.DTOs.Aunthentication.LoginDTO;
 import org.example.securehr.DTOs.Aunthentication.RegistrationDTO;
+import org.example.securehr.DTOs.User.UserResponseDTO;
 import org.example.securehr.Exceptions.ResourceAlreadyExists;
+import org.example.securehr.Exceptions.ResourceNotFound;
 import org.example.securehr.Models.Users.Roles;
 import org.example.securehr.Models.Users.User;
 import org.example.securehr.Repositories.UserRepository;
@@ -26,6 +28,10 @@ public class UserService {
     private JWTService jwtService;
 
     private final BCryptPasswordEncoder encoder = new BCryptPasswordEncoder(12);
+
+    private UserResponseDTO userResponse (User user){
+        return new UserResponseDTO(user.getUsername(), user.getEmail(), user.getRole());
+    };
 
     public String register (RegistrationDTO registrationDTO){
         //Check if username or email already exists
@@ -61,5 +67,11 @@ public class UserService {
         }
 
         return "Unauthenticated";
+    }
+
+    public UserResponseDTO getUserById(Long id){
+        return userRepo.findById(id)
+                .map(this::userResponse)
+                .orElseThrow(() -> new ResourceNotFound("User with id '" + id + "' was not found!"));
     }
 }
