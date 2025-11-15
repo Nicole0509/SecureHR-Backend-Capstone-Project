@@ -1,6 +1,5 @@
 package org.example.securehr.DTOs.Aunthentication;
 
-import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -11,16 +10,11 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class RegistrationDTO {
+public class LoginDTO {
 
     @NotNull(message = "username is mandatory")
     @NotBlank(message = "username is mandatory")
     private String username;
-
-    @NotNull(message = "email is mandatory")
-    @NotBlank(message = "email is mandatory")
-    @Email(message = "Insert a valid email")
-    private String email;
 
     @NotNull(message = "password is mandatory")
     @NotBlank(message = "password is mandatory")
