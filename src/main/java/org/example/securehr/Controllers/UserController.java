@@ -2,6 +2,7 @@ package org.example.securehr.Controllers;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.example.securehr.DTOs.Aunthentication.LoginDTO;
 import org.example.securehr.DTOs.Aunthentication.RegistrationDTO;
@@ -87,8 +88,8 @@ public class UserController {
             }
     )
     @GetMapping("/user/{id}")
-    public UserResponseDTO getUserById(@PathVariable Long id){
-        return userService.getUserById(id);
+    public UserResponseDTO getUserById(@PathVariable Long id, HttpServletRequest request){
+        return userService.getUserById(id, request);
     }
 
     @PatchMapping("/user")
