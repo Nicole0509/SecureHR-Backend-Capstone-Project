@@ -46,6 +46,6 @@ public class UserController {
 
     @GetMapping("/hey")
     public String somethingprivate(){
-        return "you are now authenticated";
+        return "you are now authenticated :)";
     }
 }
