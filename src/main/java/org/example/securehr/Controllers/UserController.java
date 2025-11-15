@@ -6,17 +6,20 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.example.securehr.DTOs.Aunthentication.LoginDTO;
 import org.example.securehr.DTOs.Aunthentication.RegistrationDTO;
+import org.example.securehr.DTOs.User.UserInputDTO;
 import org.example.securehr.DTOs.User.UserResponseDTO;
 import org.example.securehr.Services.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api")
 public class UserController {
 
-    @Autowired
-    private UserService userService;
+    private final UserService userService;
+
+    public UserController(UserService userService) {
+        this.userService = userService;
+    }
 
     @Operation(
             description = "This end point creates a new user whose email and username must be unique otherwise an error is thrown.",
@@ -92,9 +95,9 @@ public class UserController {
         return userService.getUserById(id, request);
     }
 
-    @PatchMapping("/user")
-    public String update(){
-        return "User profile updated :)";
+    @PatchMapping("/user/{id}")
+    public UserResponseDTO updateUser(@PathVariable Long id, @Valid @RequestBody UserInputDTO userInputDTO, HttpServletRequest request){
+        return userService.updateUser(id, userInputDTO, request);
     }
 
     @DeleteMapping("/user")
