@@ -39,13 +39,41 @@ public class UserController {
         return userService.register(registrationDTO);
     }
 
+    @Operation(
+            description = "This end point logs in an existing user through username and password, then generates a token.",
+            summary = "User Sign In",
+            responses = {
+                    @ApiResponse(
+                            description = "Success",
+                            responseCode = "201"
+                    ),
+                    @ApiResponse(
+                            description = "Bad Request",
+                            responseCode = "400"
+                    ),
+                    @ApiResponse(
+                            description = "Conflict",
+                            responseCode = "409"
+                    ),
+            }
+    )
     @PostMapping("/auth/login")
     public String login(@Valid @RequestBody LoginDTO loginDTO){
         return userService.verify(loginDTO);
     }
 
-    @GetMapping("/hey")
-    public String somethingprivate(){
-        return "you are now authenticated :)";
+    @GetMapping("/user")
+    public String view(){
+        return "A list of all users :)";
+    }
+
+    @PatchMapping("/user")
+    public String update(){
+        return "User profile updated :)";
+    }
+
+    @DeleteMapping("/user")
+    public String delete(){
+        return "User profile deleted :)";
     }
 }
