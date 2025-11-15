@@ -1,6 +1,7 @@
 package org.example.securehr.Services;
 
 import org.example.securehr.DTOs.Aunthentication.RegistrationDTO;
+import org.example.securehr.Exceptions.ResourceAlreadyExists;
 import org.example.securehr.Models.Users.Roles;
 import org.example.securehr.Models.Users.User;
 import org.example.securehr.Repositories.UserRepository;
@@ -18,9 +19,12 @@ public class UserService {
 
     public String register (RegistrationDTO registrationDTO){
         //Check if username or email already exists
-        if (userRepo.existsByUsername(registrationDTO.getUsername()) || userRepo.existsByEmail(registrationDTO.getEmail())){
-            System.out.println("Username or Email is already in use");
-            throw new RuntimeException("Username or Email is already in use");
+        if (userRepo.existsByUsername(registrationDTO.getUsername())){
+            throw new ResourceAlreadyExists("The username : " + registrationDTO.getUsername() + " already exists");
+
+        } else if ( userRepo.existsByEmail(registrationDTO.getEmail())) {
+            throw new ResourceAlreadyExists("The email : " + registrationDTO.getEmail() + " already exists");
+
         }
 
         //Create a new user
