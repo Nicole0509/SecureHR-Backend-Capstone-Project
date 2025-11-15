@@ -17,6 +17,13 @@ public class UserService {
     private final BCryptPasswordEncoder encoder = new BCryptPasswordEncoder(12);
 
     public String register (RegistrationDTO registrationDTO){
+        //Check if username or email already exists
+        if (userRepo.existsByUsername(registrationDTO.getUsername()) || userRepo.existsByEmail(registrationDTO.getEmail())){
+            System.out.println("Username or Email is already in use");
+            throw new RuntimeException("Username or Email is already in use");
+        }
+
+        //Create a new user
         User user = new User();
 
         user.setUsername(registrationDTO.getUsername());

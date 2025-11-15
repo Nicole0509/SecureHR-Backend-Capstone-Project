@@ -1,5 +1,7 @@
 package org.example.securehr.Controllers;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import jakarta.validation.Valid;
 import org.example.securehr.DTOs.Aunthentication.RegistrationDTO;
 import org.example.securehr.Services.UserService;
@@ -13,6 +15,24 @@ public class UserController {
     @Autowired
     private UserService userService;
 
+    @Operation(
+            description = "This end point creates a new user whose email and username must be unique otherwise an error is thrown.",
+            summary = "Create a new user",
+            responses = {
+                    @ApiResponse(
+                            description = "Success",
+                            responseCode = "201"
+                    ),
+                    @ApiResponse(
+                            description = "Bad Request",
+                            responseCode = "400"
+                    ),
+                    @ApiResponse(
+                            description = "Conflict",
+                            responseCode = "409"
+                    ),
+            }
+    )
     @PostMapping("/auth/register")
     public String register(@Valid @RequestBody RegistrationDTO registrationDTO){
         return userService.register(registrationDTO);
