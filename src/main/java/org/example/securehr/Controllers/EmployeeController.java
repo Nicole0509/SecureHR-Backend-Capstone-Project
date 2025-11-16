@@ -9,6 +9,7 @@ import org.example.securehr.DTOs.Employee.EmployeeRequestDTO;
 import org.example.securehr.DTOs.Employee.EmployeeResponseDTO;
 import org.example.securehr.Repositories.EmployeeRepository;
 import org.example.securehr.Services.EmployeeService;
+import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -21,9 +22,30 @@ public class EmployeeController {
         this.employeeService = employeeService;
     }
 
+    @Operation(
+            description = "This endpoint shows a list of all employees to both the USER and ADMIN.",
+            summary = "Get A list of all employees",
+            responses = {
+                    @ApiResponse(
+                            description = "Success",
+                            responseCode = "200"
+                    ),
+                    @ApiResponse(
+                            description = "Not Found",
+                            responseCode = "404"
+                    ),
+                    @ApiResponse(
+                            description = "Bad Request",
+                            responseCode = "400"
+                    ),
+            }
+    )
     @GetMapping
-    public String view(){
-        return "Here's a list of employees";
+    public Page<EmployeeResponseDTO> getAllEmployees(@RequestParam(defaultValue = "0") int page,
+                                                     @RequestParam(defaultValue = "10") int size,
+                                                     @RequestParam(defaultValue = "createdBy") String sortBy,
+                                                     @RequestParam(defaultValue = "desc") String direction){
+        return employeeService.getAllEmployees(page, size, sortBy, direction);
     }
 
     @Operation(
@@ -72,13 +94,35 @@ public class EmployeeController {
             }
     )
     @GetMapping("/{id}")
-    public EmployeeResponseDTO getEmployeeById (HttpServletRequest request, @PathVariable Long id) {
-        return employeeService.getEmployeeById(request,id);
+    public EmployeeResponseDTO getEmployeeById (@PathVariable Long id) {
+        return employeeService.getEmployeeById(id);
     }
 
-    @PatchMapping
-    public String update(){
-        return "Employee updated successfully!";
+    @Operation(
+            description = "This endpoint allows a USER to patch An Employee's  credentials. The rest of the data is conserved as is in the DB.",
+            summary = "USER Patches An Employee's credentials",
+            responses = {
+                    @ApiResponse(
+                            description = "Success",
+                            responseCode = "200"
+                    ),
+                    @ApiResponse(
+                            description = "Not Found",
+                            responseCode = "404"
+                    ),
+                    @ApiResponse(
+                            description = "Bad Request",
+                            responseCode = "400"
+                    ),
+                    @ApiResponse(
+                            description = "Conflict",
+                            responseCode = "409"
+                    ),
+            }
+    )
+    @PatchMapping("/{id}")
+    public EmployeeResponseDTO updateEmployee (HttpServletRequest request, @PathVariable Long id, @Valid @RequestBody EmployeeRequestDTO employeeDTO) {
+        return  employeeService.updateEmployee(request, id, employeeDTO);
     }
 
     @DeleteMapping
