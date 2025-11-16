@@ -5,6 +5,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.transaction.Transactional;
 import org.example.securehr.DTOs.Employee.EmployeeRequestDTO;
 import org.example.securehr.DTOs.Employee.EmployeeResponseDTO;
+import org.example.securehr.Exceptions.ResourceNotFound;
 import org.example.securehr.Models.Employees.Employee;
 import org.example.securehr.Models.Users.User;
 import org.example.securehr.Repositories.EmployeeRepository;
@@ -28,12 +29,11 @@ public class EmployeeService {
         this.userService = userService;
     }
 
-    private EmployeeResponseDTO employee(Employee employee, User user){
-        return new EmployeeResponseDTO(employee.getName(), employee.getPosition(), employee.getDepartment(), employee.getHireDate(), user.getUsername());
+    private EmployeeResponseDTO employee(Employee employee){
+        return new EmployeeResponseDTO(employee.getName(), employee.getPosition(), employee.getDepartment(), employee.getHireDate(), employee.getCreatedBy().getUsername());
     }
 
     public EmployeeResponseDTO registerEmployee (HttpServletRequest request, EmployeeRequestDTO employeeDTO) {
-        User actor = userService.getActor(request);
 
         Employee employee = new Employee();
 
@@ -41,10 +41,16 @@ public class EmployeeService {
         employee.setPosition(employeeDTO.getPosition());
         employee.setDepartment(employeeDTO.getDepartment());
         employee.setHireDate(Date.valueOf(LocalDate.now()));
-        employee.setCreatedBy(actor);
+        employee.setCreatedBy(userService.getActor(request));
 
         employeeRepo.save(employee);
 
-        return employee(employee,actor);
+        return employee(employee);
+    }
+
+    public EmployeeResponseDTO getEmployeeById (HttpServletRequest request, Long id) {
+        return employeeRepo.findById(id)
+                .map(this::employee)
+                .orElseThrow(() -> new ResourceNotFound("Employee with id: " + id + " not found"));
     }
 }

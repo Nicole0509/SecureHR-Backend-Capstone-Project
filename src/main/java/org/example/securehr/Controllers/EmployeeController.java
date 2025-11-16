@@ -4,6 +4,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.Valid;
 import org.example.securehr.DTOs.Employee.EmployeeRequestDTO;
 import org.example.securehr.DTOs.Employee.EmployeeResponseDTO;
 import org.example.securehr.Repositories.EmployeeRepository;
@@ -44,8 +45,35 @@ public class EmployeeController {
             }
     )
     @PostMapping
-    public EmployeeResponseDTO registerEmployee (HttpServletRequest request, @RequestBody EmployeeRequestDTO employeeDTO){
+    public EmployeeResponseDTO registerEmployee (HttpServletRequest request, @Valid @RequestBody EmployeeRequestDTO employeeDTO){
         return employeeService.registerEmployee(request, employeeDTO);
+    }
+
+    @Operation(
+            description = "This endpoint shows a single employee to both the USER and ADMIN.",
+            summary = "Get An Employee By Id",
+            responses = {
+                    @ApiResponse(
+                            description = "Success",
+                            responseCode = "200"
+                    ),
+                    @ApiResponse(
+                            description = "Not Found",
+                            responseCode = "404"
+                    ),
+                    @ApiResponse(
+                            description = "Bad Request",
+                            responseCode = "400"
+                    ),
+                    @ApiResponse(
+                            description = "Conflict",
+                            responseCode = "409"
+                    ),
+            }
+    )
+    @GetMapping("/{id}")
+    public EmployeeResponseDTO getEmployeeById (HttpServletRequest request, @PathVariable Long id) {
+        return employeeService.getEmployeeById(request,id);
     }
 
     @PatchMapping
