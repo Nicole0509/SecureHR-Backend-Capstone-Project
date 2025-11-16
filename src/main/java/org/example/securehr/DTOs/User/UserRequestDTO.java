@@ -12,7 +12,7 @@ import org.example.securehr.Models.Users.Roles;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class UserInputDTO {
+public class UserRequestDTO {
     @NotNull(message = "username is mandatory")
     @NotBlank(message = "username is mandatory")
     private String username;
