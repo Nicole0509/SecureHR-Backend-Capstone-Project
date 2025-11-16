@@ -7,7 +7,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.example.securehr.DTOs.Aunthentication.LoginDTO;
 import org.example.securehr.DTOs.Aunthentication.RegistrationDTO;
-import org.example.securehr.DTOs.User.UserInputDTO;
+import org.example.securehr.DTOs.User.UserRequestDTO;
 import org.example.securehr.DTOs.User.UserResponseDTO;
 import org.example.securehr.Services.UserService;
 import org.springframework.data.domain.Page;
@@ -121,8 +121,8 @@ public class UserController {
             }
     )
     @PatchMapping("/user/{id}")
-    public UserResponseDTO updateUser(@PathVariable Long id, @Valid @RequestBody UserInputDTO userInputDTO, HttpServletRequest request){
-        return userService.updateUser(id, userInputDTO, request);
+    public UserResponseDTO updateUser(@PathVariable Long id, @Valid @RequestBody UserRequestDTO userRequestDTO, HttpServletRequest request){
+        return userService.updateUser(id, userRequestDTO, request);
     }
 
     @Operation(
