@@ -1,5 +1,6 @@
 package org.example.securehr.Models.Users;
 
+import org.example.securehr.Exceptions.ResourceNotFound;
 import org.example.securehr.Repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -14,12 +15,9 @@ public class UserDetailService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User user = userRepo.findByUsername(username);
+        User user = userRepo.findByUsername(username)
+                .orElseThrow(() -> new ResourceNotFound("User not found with username: " + username));
 
-        if (user == null) {
-            System.out.println("User not found");
-            throw new UsernameNotFoundException("User not found");
-        }
         return new UserPrincipal(user);
     }
 }
