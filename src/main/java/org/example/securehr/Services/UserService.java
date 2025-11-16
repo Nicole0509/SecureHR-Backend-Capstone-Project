@@ -46,7 +46,7 @@ public class UserService {
         return new UserResponseDTO(user.getUsername(), user.getEmail(), user.getRole());
     }
 
-    private User getActor(HttpServletRequest request) {
+    public User getActor(HttpServletRequest request) {
         String username = jwtService.getUserNameFromRequest(request);
 
         return userRepo.findByUsername(username)
