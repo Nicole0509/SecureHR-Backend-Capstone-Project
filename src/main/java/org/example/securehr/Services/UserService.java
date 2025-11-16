@@ -10,12 +10,18 @@ import org.example.securehr.Exceptions.ResourceNotFound;
 import org.example.securehr.Models.Users.Roles;
 import org.example.securehr.Models.Users.User;
 import org.example.securehr.Repositories.UserRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 public class UserService {
@@ -38,11 +44,16 @@ public class UserService {
         return new UserResponseDTO(user.getUsername(), user.getEmail(), user.getRole());
     }
 
-    private void grantAccessByRole(Long id, HttpServletRequest request){
-        String username = jwtService.getUserNameFromRequest(request); //extract username from token
+    private User getActor(HttpServletRequest request) {
+        String username = jwtService.getUserNameFromRequest(request);
 
-        User user = userRepo.findByUsername(username)
-                .orElseThrow(() -> new ResourceNotFound("User not found with username: " + username));
+        return userRepo.findByUsername(username)
+                .orElseThrow(() -> new ResourceNotFound("Logged-in user not found"));
+    }
+
+    private void grantAccessByRole(Long id, HttpServletRequest request){
+
+        User user = getActor(request);
 
         if(user.getRole().equals(Roles.USER)) { //restrict USER role to access other people's profiles
             grantUserAccess(user, id);
@@ -101,10 +112,7 @@ public class UserService {
 
     public UserResponseDTO updateUser(Long id, UserInputDTO userInputDTO, HttpServletRequest request){
         //Logged-in user
-        String username = jwtService.getUserNameFromRequest(request);
-
-        User actor = userRepo.findByUsername(username)
-                .orElseThrow(() -> new ResourceNotFound("Logged-in user not found"));
+        User actor = getActor(request);
 
         return userRepo.findById(id)
                 .map(target -> {
@@ -140,4 +148,21 @@ public class UserService {
                     return userResponse(target);
                 }).orElseThrow(() -> new ResourceNotFound("User with id '" + id + "' was not found!"));
     }
+
+    public Page<UserResponseDTO> getAllUsers( HttpServletRequest request, int page, int size, String sortBy, String direction){
+        if (getActor(request).getRole().equals(Roles.ADMIN)) {
+            Sort sort = direction.equalsIgnoreCase("desc")
+                    ? Sort.by(sortBy).descending()
+                    : Sort.by(sortBy).ascending();
+
+            Pageable pageable = PageRequest.of(page, size, sort);
+
+            Page<User> postsPage = userRepo.findAll(pageable);
+
+            return postsPage.map(this::userResponse);
+        }
+
+        throw  new AccessDeniedException("You are not allowed to access a list of all users.");
+    }
+
 }

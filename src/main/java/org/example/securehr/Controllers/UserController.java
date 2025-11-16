@@ -9,6 +9,7 @@ import org.example.securehr.DTOs.Aunthentication.RegistrationDTO;
 import org.example.securehr.DTOs.User.UserInputDTO;
 import org.example.securehr.DTOs.User.UserResponseDTO;
 import org.example.securehr.Services.UserService;
+import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -95,9 +96,58 @@ public class UserController {
         return userService.getUserById(id, request);
     }
 
+    @Operation(
+            description = "This endpoint allows to patch a User's credentials or for the admin to assign roles to other user's except themself. The rest of the data is conserved as is in the DB.",
+            summary = "Patches A User's credentials",
+            responses = {
+                    @ApiResponse(
+                            description = "Success",
+                            responseCode = "200"
+                    ),
+                    @ApiResponse(
+                            description = "Not Found",
+                            responseCode = "404"
+                    ),
+                    @ApiResponse(
+                            description = "Bad Request",
+                            responseCode = "400"
+                    ),
+                    @ApiResponse(
+                            description = "Conflict",
+                            responseCode = "409"
+                    ),
+            }
+    )
     @PatchMapping("/user/{id}")
     public UserResponseDTO updateUser(@PathVariable Long id, @Valid @RequestBody UserInputDTO userInputDTO, HttpServletRequest request){
         return userService.updateUser(id, userInputDTO, request);
+    }
+
+    @Operation(
+            description = "This endpoint allows ADMIN role to view all users. This method also renders everything in form of pages and applies some sorting as per the user requirements.",
+            summary = "Get All users with their associated employees",
+            responses = {
+                    @ApiResponse(
+                            description = "Success",
+                            responseCode = "200"
+                    ),
+                    @ApiResponse(
+                            description = "Not Found",
+                            responseCode = "404"
+                    ),
+                    @ApiResponse(
+                            description = "Bad Request",
+                            responseCode = "400"
+                    ),
+            }
+    )
+    @GetMapping("/user")
+    public Page<UserResponseDTO> getAllUsers(HttpServletRequest request,
+                                             @RequestParam(defaultValue = "0") int page,
+                                             @RequestParam(defaultValue = "10") int size,
+                                             @RequestParam(defaultValue = "username") String sortBy,
+                                             @RequestParam(defaultValue = "desc") String direction){
+        return userService.getAllUsers(request, page, size, sortBy, direction);
     }
 
     @DeleteMapping("/user")
