@@ -5,7 +5,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.transaction.Transactional;
 import org.example.securehr.DTOs.Aunthentication.LoginDTO;
 import org.example.securehr.DTOs.Aunthentication.RegistrationDTO;
-import org.example.securehr.DTOs.User.UserInputDTO;
+import org.example.securehr.DTOs.User.UserRequestDTO;
 import org.example.securehr.DTOs.User.UserResponseDTO;
 import org.example.securehr.Exceptions.ResourceAlreadyExists;
 import org.example.securehr.Exceptions.ResourceNotFound;
@@ -22,8 +22,6 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 @Service
 @Transactional
@@ -114,7 +112,7 @@ public class UserService {
                 .orElseThrow(() -> new ResourceNotFound("User with id '" + id + "' was not found!"));
     }
 
-    public UserResponseDTO updateUser(Long id, UserInputDTO userInputDTO, HttpServletRequest request){
+    public UserResponseDTO updateUser(Long id, UserRequestDTO userRequestDTO, HttpServletRequest request){
         //Logged-in user
         User actor = getActor(request);
 
@@ -128,22 +126,22 @@ public class UserService {
                         }
 
                         //USER can update everything but their role
-                        target.setUsername(userInputDTO.getUsername());
-                        target.setEmail(userInputDTO.getEmail());
-                        target.setPassword(encoder.encode(userInputDTO.getPassword()));
+                        target.setUsername(userRequestDTO.getUsername());
+                        target.setEmail(userRequestDTO.getEmail());
+                        target.setPassword(encoder.encode(userRequestDTO.getPassword()));
 
                     } else if (actor.getRole().equals(Roles.ADMIN)) { //if the Jwt role is ROLE
 
                         if(actor.getId().equals(id)) {
 
                             // Admin updating their own credentials except role
-                            target.setUsername(userInputDTO.getUsername());
-                            target.setEmail(userInputDTO.getEmail());
-                            target.setPassword(encoder.encode(userInputDTO.getPassword()));
+                            target.setUsername(userRequestDTO.getUsername());
+                            target.setEmail(userRequestDTO.getEmail());
+                            target.setPassword(encoder.encode(userRequestDTO.getPassword()));
                         } else {
 
                             // Admin updating someone else's role
-                            target.setRole(userInputDTO.getRole());
+                            target.setRole(userRequestDTO.getRole());
                         }
                     }
 
