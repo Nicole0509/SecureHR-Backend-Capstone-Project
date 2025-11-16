@@ -2,6 +2,7 @@ package org.example.securehr.Controllers;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.example.securehr.DTOs.Aunthentication.LoginDTO;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api")
+@Tag(name = "Users")
 public class UserController {
 
     private final UserService userService;
@@ -41,7 +43,7 @@ public class UserController {
             }
     )
     @PostMapping("/auth/register")
-    public String register(@Valid @RequestBody RegistrationDTO registrationDTO){
+    public UserResponseDTO register(@Valid @RequestBody RegistrationDTO registrationDTO){
         return userService.register(registrationDTO);
     }
 
@@ -150,8 +152,26 @@ public class UserController {
         return userService.getAllUsers(request, page, size, sortBy, direction);
     }
 
-    @DeleteMapping("/user")
-    public String delete(){
-        return "User profile deleted :)";
+    @Operation(
+            description = "This endpoint allows a USER to delete one's account or the ADMIN to delete any account of choice.",
+            summary = "Deletes A user's Credentials",
+            responses = {
+                    @ApiResponse(
+                            description = "Success/No Content",
+                            responseCode = "204"
+                    ),
+                    @ApiResponse(
+                            description = "Not Found",
+                            responseCode = "404"
+                    ),
+                    @ApiResponse(
+                            description = "Bad Request",
+                            responseCode = "400"
+                    ),
+            }
+    )
+    @DeleteMapping("/user/{id}")
+    public String delete(@PathVariable Long id, HttpServletRequest request){
+        return userService.delete(id,request);
     }
 }

@@ -1,6 +1,8 @@
 package org.example.securehr.Services;
 
+import jakarta.persistence.Cacheable;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.transaction.Transactional;
 import org.example.securehr.DTOs.Aunthentication.LoginDTO;
 import org.example.securehr.DTOs.Aunthentication.RegistrationDTO;
 import org.example.securehr.DTOs.User.UserInputDTO;
@@ -24,6 +26,8 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
+@Transactional
+@Cacheable
 public class UserService {
 
     private final UserRepository userRepo;
@@ -66,7 +70,7 @@ public class UserService {
         }
     }
 
-    public String register (RegistrationDTO registrationDTO){
+    public UserResponseDTO register (RegistrationDTO registrationDTO){
         //Check if username or email already exists
         if (userRepo.existsByUsername(registrationDTO.getUsername())){
             throw new ResourceAlreadyExists("The username : " + registrationDTO.getUsername() + " already exists");
@@ -84,7 +88,7 @@ public class UserService {
 
         userRepo.save(user);
 
-        return "Registered Successfully";
+        return userResponse(user);
     }
 
     public String verify (LoginDTO loginDTO){
@@ -163,6 +167,16 @@ public class UserService {
         }
 
         throw  new AccessDeniedException("You are not allowed to access a list of all users.");
+    }
+
+    public String delete(Long id, HttpServletRequest request){
+        grantAccessByRole(id, request);
+
+        if(!userRepo.existsById(id)){
+            throw new ResourceNotFound("User with id '" + id + "' was not found");
+        }
+        userRepo.deleteById(id);
+        return "User with id: " + id + " was deleted Successfully";
     }
 
 }
