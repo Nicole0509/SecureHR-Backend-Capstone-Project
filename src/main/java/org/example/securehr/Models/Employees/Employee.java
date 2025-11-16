@@ -28,7 +28,7 @@ public class Employee {
     @Column(name = "department")
     private String department;
 
-//    @Column(name = "hireDate")
+    @Column(name = "hire_date")
     private Date hireDate;
 
     @ManyToOne
