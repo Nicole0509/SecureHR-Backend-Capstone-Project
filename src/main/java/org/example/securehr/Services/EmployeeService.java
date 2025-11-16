@@ -84,4 +84,14 @@ public class EmployeeService {
                     return employee(employee);
                 }).orElseThrow(() -> new ResourceNotFound("Employee with id: " + id + " was not found"));
     }
+
+    public String deleteEmployee (HttpServletRequest request, Long id) {
+        if(!employeeRepo.existsById(id)){
+            throw new ResourceNotFound("User with id '" + id + "' was not found");
+        }
+
+        employeeRepo.deleteById(id);
+
+        return "Employee with id: " + id + " was deleted successfully";
+    }
 }

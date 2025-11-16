@@ -125,8 +125,26 @@ public class EmployeeController {
         return  employeeService.updateEmployee(request, id, employeeDTO);
     }
 
-    @DeleteMapping
-    public String delete(){
-        return "Employee deleted successfully!";
+    @Operation(
+            description = "This endpoint allows ADMIN to delete an employees credentials. USER can not access it.",
+            summary = "ADMIN Deletes An Employee's Credentials",
+            responses = {
+                    @ApiResponse(
+                            description = "Success/No Content",
+                            responseCode = "204"
+                    ),
+                    @ApiResponse(
+                            description = "Not Found",
+                            responseCode = "404"
+                    ),
+                    @ApiResponse(
+                            description = "Bad Request",
+                            responseCode = "400"
+                    ),
+            }
+    )
+    @DeleteMapping("/{id}")
+    public String deleteEmployee (HttpServletRequest request, @PathVariable Long id) {
+        return employeeService.deleteEmployee(request, id);
     }
 }
