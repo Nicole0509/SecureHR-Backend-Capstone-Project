@@ -15,7 +15,6 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
@@ -34,16 +33,14 @@ public class SecurityConfig {
                         .requestMatchers("/api/auth/register","/api/auth/login","/swagger-ui/**", "/v3/api-docs/**").permitAll()
 
                         .requestMatchers(HttpMethod.DELETE, "/api/employee/**").hasRole("ADMIN")
-
-                        .requestMatchers(HttpMethod.POST, "/api/employee/**").hasRole("USER")
-                        .requestMatchers(HttpMethod.PATCH, "/api/employee/**").hasRole("USER")
-                        .requestMatchers(HttpMethod.PUT, "/api/employee/**").hasRole("USER")
+                        .requestMatchers(HttpMethod.POST, "/api/employee/**").hasRole("ADMIN")
 
                         .anyRequest().authenticated())
                 .formLogin(Customizer.withDefaults())
                 .httpBasic(Customizer.withDefaults())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
+                .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
+                .oauth2Login(Customizer.withDefaults());
 
         return http.build();
     }
