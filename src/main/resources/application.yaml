@@ -2,6 +2,14 @@ spring:
   application:
     name: SecureHR
 
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: ${GOOGLE-CLIENT-ID}
+            client-secret: ${GOOGLE-CLIENT-SECRET}
+
   datasource:
     driver-class-name: org.postgresql.Driver
     password: ${DB_PASSWORD}
