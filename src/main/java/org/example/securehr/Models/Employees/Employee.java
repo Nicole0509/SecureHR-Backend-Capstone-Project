@@ -1,9 +1,10 @@
-package org.example.securehr.Models;
+package org.example.securehr.Models.Employees;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.example.securehr.Models.Users.User;
 
 import java.sql.Date;
 
@@ -27,7 +28,7 @@ public class Employee {
     @Column(name = "department")
     private String department;
 
-//    @Column(name = "hireDate")
+    @Column(name = "hire_date")
     private Date hireDate;
 
     @ManyToOne
