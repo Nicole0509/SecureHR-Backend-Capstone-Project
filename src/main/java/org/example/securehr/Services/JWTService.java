@@ -57,6 +57,7 @@ public class JWTService {
 
     public boolean validateToken(String token, UserDetails userDetails) {
         final String username = extractUserName(token);
+        System.out.println("Username: " + username + " from validate token");
         return (username.equals(userDetails.getUsername()) && !isTokenExpired(token));
     }
 
@@ -70,12 +71,14 @@ public class JWTService {
 
     public String getUserNameFromRequest(HttpServletRequest request) {
         String authHeader = request.getHeader("Authorization");
+        System.out.println("authHeader: " + authHeader);
 
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
             return null;
         }
 
         String token = authHeader.substring(7);
+        System.out.println("token: " + token);
         return extractUserName(token);
     }
 }
